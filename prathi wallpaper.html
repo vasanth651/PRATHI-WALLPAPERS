@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WallVibe | Premium 4K Wallpapers</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">WALL<span>VIBE</span></div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="#">Trending</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search wallpapers...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Elevate Your Desktop</h1>
+            <p>Discover thousands of high-quality 4K wallpapers for every screen.</p>
+            <div class="category-pills">
+                <button class="pill active" data-filter="all">All</button>
+                <button class="pill" data-filter="nature">Nature</button>
+                <button class="pill" data-filter="cars">Cars</button>
+                <button class="pill" data-filter="anime">Anime</button>
+                <button class="pill" data-filter="gaming">Gaming</button>
+                <button class="pill" data-filter="abstract">Abstract</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Gallery -->
+    <main class="container">
+        <div class="gallery" id="wallpaper-grid">
+            <!-- Wallpapers will be injected here by JavaScript -->
+        </div>
+        
+        <!-- Loading Skeleton / Spinner -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+    </main>
+
+    <!-- Fullscreen Modal -->
+    <div id="preview-modal" class="modal">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="Preview">
+            <div class="modal-info">
+                <button id="download-btn" class="btn-main"><i class="fas fa-download"></i> Download</button>
+                <button id="fav-btn" class="btn-sec"><i class="far fa-heart"></i> Favorite</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 WallVibe. Built with Passion.</p>
+        <div class="socials">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+:root {
+    --primary-color: #00d2ff;
+    --accent-color: #3a7bd5;
+    --bg-dark: #0f172a;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --text-light: #f8fafc;
+    --glass: rgba(255, 255, 255, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Navbar Style */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid var(--glass);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.logo span {
+    color: var(--primary-color);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary-color);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.search-box {
+    position: relative;
+    background: var(--glass);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.search-box input {
+    background: none;
+    border: none;
+    color: white;
+    outline: none;
+    padding: 5px;
+}
+
+/* Hero Section */
+.hero {
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(15, 23, 42, 1)), 
+                url('https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    padding-top: 80px;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #00d2ff, #92fe9d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.category-pills {
+    margin-top: 2rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pill {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--glass);
+    background: var(--glass);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.pill.active, .pill:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Gallery Grid */
+.container {
+    padding: 2rem 5%;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 20px;
+    grid-auto-flow: dense;
+}
+
+.card {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 400px;
+    cursor: pointer;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.card:hover img {
+    transform: scale(1.1);
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    opacity: 0;
+    transition: var(--transition);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card:hover .card-overlay {
+    opacity: 1;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 80%;
+    text-align: center;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0,210,255,0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Loading Animation */
+.loading {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--glass);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.2rem; }
+    .gallery { grid-template-columns: 1fr; }
+}
+// Sample Data (In a real app, you'd fetch from an API like Unsplash)
+const wallpaperData = [
+    { id: 1, category: 'nature', url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80' },
+    { id: 2, category: 'cars', url: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=800&q=80' },
+    { id: 3, category: 'abstract', url: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80' },
+    { id: 4, category: 'gaming', url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80' },
+    { id: 5, category: 'anime', url: 'https://images.unsplash.com/photo-1578632738908-4521c59639f8?auto=format&fit=crop&w=800&q=80' },
+    { id: 6, category: 'nature', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80' },
+    // Add more items to test infinite scroll
+];
+
+const grid = document.getElementById('wallpaper-grid');
+const modal = document.getElementById('preview-modal');
+const modalImg = document.getElementById('modal-img');
+const closeBtn = document.querySelector('.close-modal');
+const pills = document.querySelectorAll('.pill');
+const searchInput = document.getElementById('search-input');
+
+// Initialize Gallery
+function loadGallery(filter = 'all') {
+    grid.innerHTML = '';
+    const filtered = filter === 'all' 
+        ? wallpaperData 
+        : wallpaperData.filter(item => item.category === filter);
+
+    filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <img src="${item.url}" alt="${item.category}" loading="lazy">
+            <div class="card-overlay">
+                <div class="info">
+                    <p>${item.category.toUpperCase()}</p>
+                </div>
+                <button class="fav-icon" onclick="toggleFavorite(${item.id})">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        `;
+        card.onclick = () => openModal(item.url);
+        grid.appendChild(card);
+    });
+}
+
+// Modal Logic
+function openModal(url) {
+    modal.style.display = 'flex';
+    modalImg.src = url;
+    document.body.style.overflow = 'hidden'; // Stop scroll
+}
+
+closeBtn.onclick = () => {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) closeBtn.onclick();
+};
+
+// Filter Logic
+pills.forEach(pill => {
+    pill.onclick = () => {
+        document.querySelector('.pill.active').classList.remove('active');
+        pill.classList.add('active');
+        loadGallery(pill.dataset.filter);
+    };
+});
+
+// Search Logic
+searchInput.oninput = (e) => {
+    const term = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const cat = card.querySelector('p').innerText.toLowerCase();
+        card.style.display = cat.includes(term) ? 'block' : 'none';
+    });
+};
+
+// Theme Toggle
+const themeBtn = document.getElementById('theme-toggle');
+themeBtn.onclick = () => {
+    document.body.classList.toggle('light-theme');
+    const icon = themeBtn.querySelector('i');
+    icon.classList.toggle('fa-moon');
+    icon.classList.toggle('fa-sun');
+};
+
+// LocalStorage Favorites (Simple Implementation)
+function toggleFavorite(id) {
+    event.stopPropagation();
+    let favorites = JSON.parse(localStorage.getItem('favs')) || [];
+    if(favorites.includes(id)) {
+        favorites = favorites.filter(favId => favId !== id);
+    } else {
+        favorites.push(id);
+    }
+    localStorage.setItem('favs', JSON.stringify(favorites));
+    alert('Updated Favorites!');
+}
+
+// Initial Load
+window.onload = () => {
+    loadGallery();
+};
